@@ -1,0 +1,173 @@
+import sqlite3
+from . import db
+
+def dtp_vers(dbh):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM Version;").fetchone()
+
+def dtp_vehtype(dbh, vehtype):
+    if dbh is not None:
+        return dbh.execute("SELECT Type FROM VehType WHERE TypeId=(?)", (vehtype,)).fetchone()
+
+def dtp_fetch(dbh, dtp):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM Master WHERE DtpNumber=(?);", (dtp,)).fetchall()
+
+def dtp_aweights(dbh, numaxles, dtp):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM {0}trl WHERE DTP=(?);".format(str("A"*numaxles)), (dtp,)).fetchone()
+
+def dtp_t_parse(dtp):
+    if(dtp is not None):
+        dbh = db.get_db()
+        trailer = {}
+        aweights = {}
+        # Character A: Type of trailer
+        match dtp[0]:
+            case '1':
+                trailer["Type"] = '1S'
+            case '2':
+                trailer["Type"] = '2S'
+            case '3':
+                trailer["Type"] = '3S'
+            case '4':
+                trailer["Type"] = '4S'
+            case '5':
+                trailer["Type"] = '1C'
+            case '6':
+                trailer["Type"] = '2C'
+            case '7':
+                trailer["Type"] = '3C'
+            case '8':
+                trailer["Type"] = '2D'
+            case '9':
+                trailer["Type"] = '3D'
+            case '0':
+                trailer["Type"] = '4D'
+            case _:
+                return None # FIXME: Make this a more useful error.
+
+        aweights = dtp_aweights(dbh, int(trailer["Type"][0]), dtp[1:4])
+        # Character B, C, D
+        if(trailer["Type"][1] != 'S'):
+            # Drawbar trailers have all their weight on their axles,
+            # so Total Axle Weight is the same as their GVW, and this
+            # weight is encoded in their DTP number.
+            trailer["GVW"] = str(int(dtp[1:4]) * 100)
+            trailer["TAW"] = None
+        else:
+            # Semi-trailers are a bit more awkward, and so the number
+            # encoded in their DTP is a reference into a different
+            # lookup table. (TODO)
+            trailer["GVW"] = aweights["GVW"]
+            trailer["TAW"] = aweights["TotalAxleWeight"]
+
+        # Character E: Which axles have park-brake.
+        parkaxles = ''
+        trailer["AxleCount"] = int(trailer["Type"][0])
+        match dtp[4]:
+            case '1': # Axle 1 only
+                trailer["Park"] = [True, False, False, False]
+            case '2': # Axle 2 only
+                if(trailer["AxleCount"] < 2):
+                    return None # FIXME: Make this more useful as an error.
+                trailer["Park"] = [False, True, False, False]
+            case '3': # Axles 1 + 2
+                if(trailer["AxleCount"] < 2):
+                    return None # FIXME
+                trailer["Park"] = [True, True, False, False]
+            case '4': # Axle 3 only
+                if(trailer["AxleCount"] < 3):
+                    return None # FIXME
+                trailer["Park"] = [False, False, True, False]
+            case '5': # Axles 1 + 3
+                if(trailer["AxleCount"] < 3):
+                    return None # FIXME
+                trailer["Park"] = [True, False, True, False]
+            case '6': # Axles 2 + 3
+                if(trailer["AxleCount"] < 3):
+                    return None # FIXME
+                trailer["Park"] = [False, True, True, False]
+            case '7': # Axles 1 + 2 + 3
+                if(trailer["AxleCount"] < 3):
+                    return None # FIXME
+                trailer["Park"] = [True, True, True, False]
+            case '8': # Axle 4 only
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [False, False, False, True]
+            case '9': # Axles 1 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [True, False, False, True]
+            case 'A': # Axles 2 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [False, True, False, True]
+            case 'B': # Axles 1 + 2 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [True, True, False, True]
+            case 'C': # Axles 3 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [False, False, True, True]
+            case 'D': # Axles 1 + 3 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [True, False, True, True]
+            case 'E': # Axles 2 + 3 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [False, True, True, True]
+            case 'F': # Axles 1 + 2 + 3 + 4
+                if(trailer["AxleCount"] < 4):
+                    return None # FIXME
+                trailer["Park"] = [True, True, True, True]
+            case _:
+                # Invalid character
+                return None # FIXME
+
+        # Character F: What LSV/ABS features/is trailer type approved?
+        trailer["LSV"] = False
+        trailer["ABS"] = False
+        trailer["EBS"] = False
+        trailer["TypeAppr"] = False
+
+        match dtp[5]:
+            case '0':
+                # Nothing to do, but we need to do 'something'
+                trailer["TypeAppr"] = False
+            case '1':
+                trailer["TypeAppr"] = True
+            case '2':
+                trailer["ABS"] = True
+            case '3':
+                trailer["ABS"] = True
+                trailer["TypeAppr"] = True
+            case '4':
+                trailer["LSV"] = True
+            case '5':
+                trailer["LSV"] = True
+                trailer["TypeAppr"] = True
+            case '6':
+                trailer["LSV"] = True
+                trailer["ABS"] = True
+            case '7':
+                trailer["LSV"] = True
+                trailer["ABS"] = True
+                trailer["TypeAppr"] = True
+            case '8':
+                trailer["EBS"] = True
+            case _:
+                # How the fuck did you get here?
+                return None
+
+
+        trailer["Axle1Weight"] = aweights['Axle1Weight']
+        trailer["Axle2Weight"] = aweights['Axle2Weight'] if(trailer["AxleCount"] > 1) else None
+        trailer["Axle3Weight"] = aweights['Axle3Weight'] if(trailer["AxleCount"] > 2) else None
+        trailer["Axle4Weight"] = aweights['Axle4Weight'] if(trailer["AxleCount"] > 3) else None
+        return trailer
+#    else:
+#        return None
