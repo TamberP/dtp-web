@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DTP Search Results: ({{ dtpmaybe }}) - {{ resultcount }} result{% if resultcount > 1 %}s{% endif %}</title>
+  </head>
+  <body>
+    <h1>Result for {{ dtpmaybe }}</h1>
+
+    {% for truck in rtrucks %}
+    <table>
+      <tr>
+	<th>DTP</th> <td>{{truck["DTpNumber"] }}</td>
+      </tr>
+      <tr>
+	<th>Make</th> <td>{{ truck["MakeId"] }}</td>
+      </tr>
+      <tr>
+	<th>Gross Weight</th> <td>{{ truck["GVW_DesignWeight"] * 10 }}kg</td>
+      </tr>
+      <tr>
+	<th>Train Weight</th> <td>{{ truck["GTW_DesignWeight"] * 10 }}kg</td>
+      </tr>
+      <tr>
+	<th>Brake Routine</th> <td>{{ truck["BrakeRoutine"] }}</td>
+      </tr>
+    </table>
+    {% endfor %}
+  </body>
+</html>

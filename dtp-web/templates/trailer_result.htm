@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DTP Lookup - Trailer Result ( {{dtpmaybe}} )</title>
+  </head>
+  <body>
+    <h1>Result for {{ dtpmaybe }}</h1>
+    <table>
+      <tr>
+	<th>DTP</th> <td>{{ dtpmaybe }}</td>
+      </tr>
+      <tr>
+	<th>Type</th> <td>{{ rtrailer["TypeStr"] }}</td>
+      </tr>
+      <tr>
+	<th>Gross Weight</th> <td>{{ rtrailer["GVW"] }}kg</td>
+      </tr>
+      {% if rtrailer["TAW"] %}
+      <tr>
+	<th>Total Axle Weight</th><td>{{rtrailer["TAW"]}}kg</td>
+      </tr>
+      <tr>
+	<th>Kingpin Weight</th><td>{{rtrailer["GVW"] - rtrailer["TAW"]}}kg</td>
+      </tr>
+      {% endif %}
+      {% for x in range(1, (rtrailer["AxleCount"]+1)):%}
+      <tr>
+	<th>Axle {{ x }}</th> <td>{{rtrailer["Axle{0}Weight".format(x)]}}kg</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

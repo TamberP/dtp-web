@@ -7,7 +7,11 @@ def dtp_vers(dbh):
 
 def dtp_vehtype(dbh, vehtype):
     if dbh is not None:
-        return dbh.execute("SELECT Type FROM VehType WHERE TypeId=(?)", (vehtype,)).fetchone()
+        return dbh.execute("SELECT Type FROM VehType WHERE TypeId=(?)", (vehtype,)).fetchone()[0]
+
+def dtp_vehmake(dbh, vehmake):
+    if dbh is not None:
+        return dbh.execute("SELECT Make FROM VehMake WHERE MakeId=(?)", (vehmake,)).fetchone()[0]
 
 def dtp_fetch(dbh, dtp):
     if dbh is not None:
