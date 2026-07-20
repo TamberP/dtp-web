@@ -13,6 +13,14 @@ def dtp_vehmake(dbh, vehmake):
     if dbh is not None:
         return dbh.execute("SELECT Make FROM VehMake WHERE MakeId=(?)", (vehmake,)).fetchone()[0]
 
+def dtp_brakeroutine(dbh, routineid):
+    if dbh is not None:
+        return dbh.execute("SELECT \"Routine\" FROM BrakRoute WHERE RoutineId=(?)", (routineid,)).fetchone()
+
+def dtp_braketype(dbh, typeid):
+    if dbh is not None:
+        return dbh.execute("SELECT Type FROM braktype WHERE TypeId=(?)", (typeid,)).fetchone()[0]
+
 def dtp_fetch(dbh, dtp):
     if dbh is not None:
         return dbh.execute("SELECT * FROM Master WHERE DtpNumber=(?);", (dtp,)).fetchall()
