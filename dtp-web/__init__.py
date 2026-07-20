@@ -13,16 +13,22 @@ def create_app():
         DATABASE=os.path.join(app.instance_path, 'DTP-base.sqlite'),
     )
 
-################################################################################
-###                            Default                                       ###
-################################################################################
-
-    @app.route('/', methods=['POST', 'GET'])
+    ################################################################################
+    ###                            Default                                       ###
+    ################################################################################
+    @app.route('/')
     def index():
-        # This 'window' should have the quick dtp number search box, and a way to get to:
-        # - advanced search
-        # - trailer search
-        # - advanced trailer search
+        # Links to truck search, trailer search, and PSV search
+        return render_template('index.htm')
+
+
+    ################################################################################
+    ###                            Truck                                         ###
+    ################################################################################
+    @app.route('/truck', methods=['POST', 'GET'])
+    def truck():
+        # This 'window' should have the quick dtp number search box,
+        # and a way to do an advanced search.
         dbh = db.get_db()
         error = None
         dtpmaybe = None
@@ -67,12 +73,13 @@ def create_app():
 
             # return blob
         else:
-            return "<form action='/' method='post'><input type='text' id='dtp' name='dtp'><br><input type='submit' value='Submit'></form>"
+            #TODO: nice actual page here using a template instead.
+            return "<form action='/truck' method='post'><input type='text' id='dtp' name='dtp'><br><input type='submit' value='Submit'></form>"
 
 
-################################################################################
-###                            Trailers                                      ###
-################################################################################
+    ################################################################################
+    ###                            Trailers                                      ###
+    ################################################################################
     @app.route('/trailer', methods=['POST', 'GET'])
     def trailer():
         # - quick DTP search box
