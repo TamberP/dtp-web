@@ -37,11 +37,27 @@ def create_app():
         if(dtpmaybe is not None):
             # todo: validate the dtp
             results = dtp.dtp_fetch(dbh, dtpmaybe)
+            aresults = []
             resultcount = len(results)
             if(resultcount == 0):
                 return "No results found."
 
-            return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=results)
+            for i in results:
+                tmp = dict(i)
+#                print(tmp)
+                tmp["MakeStr"] = dtp.dtp_vehmake(dbh, tmp["MakeId"])
+                tmp["TypeStr"] = dtp.dtp_vehtype(dbh, tmp["TypeId"])
+                woem = dtp.dtp_brakeroutine(dbh, tmp["BrakeRoutine"])[0].split(",")
+                tmp["BrakeRoutineServ"] = woem[0]
+                tmp["BrakeRoutineSec"]  = woem[1]
+                tmp["BrakeRoutinePark"] = woem[2]
+                tmp["FoundServStr"] = dtp.dtp_braketype(dbh, tmp["FoundServBrake"])
+                tmp["FoundSecStr"] = dtp.dtp_braketype(dbh, tmp["FoundSecBrake"])
+                tmp["FoundParkStr"] = dtp.dtp_braketype(dbh, tmp["FoundParkBrake"])
+                tmp["AxleCount"] = int(tmp["TypeId"][0])
+                aresults.append(tmp)
+
+            return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=aresults)
 
             # blob = "<h1>Truck</h1><b>{0}</b> Result{1}:<br>".format(resultcount, 's' if (resultcount > 1) else '')
             # for result in results:
