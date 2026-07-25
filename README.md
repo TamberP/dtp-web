@@ -1,7 +1,7 @@
 # DTP-web
 
 This is an offshoot of
-[https://github.com/TamberP/dtp-base](dtp-base), but reworked and
+[dtp-base](https://github.com/TamberP/dtp-base), but reworked and
 refactored to provide a web interface, mostly so that I can use it on
 my phone from work.
 
