@@ -2,11 +2,13 @@
 <html>
   <head>
     <title>DTP Search Results: ({{ dtpmaybe }}) - {{ resultcount }} result{% if resultcount > 1 %}s{% endif %}</title>
+    <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
   </head>
   <body>
     <h1>Result for {{ dtpmaybe }}</h1>
 
     {% for truck in rtrucks %}
+    <div class="resultcard">
     <table>
       <tr>
 	<th>DTP</th> <td>{{truck["DTpNumber"] }}</td>
@@ -49,6 +51,7 @@
       </tr>
       {% endfor %}
     </table>
+    </div>
     {% endfor %}
 
     <a href="/truck">Back to search...</a>

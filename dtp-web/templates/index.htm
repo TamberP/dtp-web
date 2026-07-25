@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>dtp-web DTP Search System</title>
+    <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="header">
+      <h1>dtp-web Roller Brake Test Search</h1>
+      <p>
+	This is a tool for digging through the Department for
+	Transport's roller brake test database, in order to find a brake
+	test procedure by DTP number, or by using an advanced search in
+	order to look up an appropriate DTP number where none is easily
+	available.
+      </p>
+    </div>
+    <div id="bigselect">
+      <a href="/truck">
+	<div class="bigbutton" id="truck">Truck Search
+	  <p class="desc">
+	    Search for trucks -- rigids or tractor units -- by the DTP on their VTG 6 plate, or by advanced search.
+	  </p>
+      </div></a>
+      <a href="/trailer">
+	<div class="bigbutton" id="trailer">Trailer Search
+	  <p class="desc">
+	    Search for trailers -- drawbar or semi-articulated -- by DTP on the plate, or by advanced search.
+	  </p>
+      </div></a>
+      <a href="/psv">
+	<div class="bigbutton" id="psv">PSV Search
+	  <p class="desc">
+	    Search for buses and coaches by their DTP, or by advanced search.
+	  </p>
+      </div></a>
+    </div>
+    <div id="footer">
+      <p>
+	For the code, please
+	see <a href="https://github.com/TamberP/dtp-web"
+	title="GibHut, online source repository">the GibHut
+	repository</a>. The code that makes up this project, except
+	where otherwise noted, is provided under the terms of the AGPL
+	v3.0 license.
+      </p>
+      <p>
+	<tt>_sql_util.py</tt> is copyright &copy; 2018 lemon24, and
+	provided by <a href="https://github.com/lemon24/reader">the
+	reader project</a>, licensed under the BSD 3-clause license.
+      </p>
+      <p>
+	The contents of the DTA database are a product of the UK
+	Department for Transport, and are public sector information
+	licensed under the Open Government License v3.0.
+      </p>
+    </div>
+  </body>
+</html>

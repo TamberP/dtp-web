@@ -1,0 +1,104 @@
+background-color: #141A1F;
+color: #F5F5DC;
+
+@media (prefers-color-scheme: light){
+    background-color: #F5F5DC;
+    color: #141A1F;
+}
+
+body {
+    width: 90%;
+    margin: auto;
+    margin: 1em;
+    font-family: sans-serif;
+}
+
+a {
+    color: #F5F5DC;
+}
+
+a:hover {
+    text-decoration: underline wavy;
+    text-shadow: 3px 3px 5px black;
+}
+
+@media (prefers-color-scheme: light){
+    a {
+	color: #2B2119;
+    }
+
+    a:hover {
+	text-shadow: 3px 3px 5px white;
+    }
+}
+
+
+#header {
+    width: 80%;
+    margin: auto;
+}
+
+#bigselect {
+    width: 80%;
+    height: 10em;
+    margin: auto;
+}
+
+div.bigbutton {
+    margin: auto;
+    width: 25%;
+    height: 5em;
+    padding: 3%;
+    display: inline-block;
+    border: 3px solid;
+    border-radius: 10px;
+    text-align: center;
+    opacity: 0.8;
+    font-size: 2em;
+}
+
+div.bigbutton p.desc {
+    display: inline-block;
+    text-align: justify;
+    font-size: 0.5em;
+}
+
+div.bigbutton:hover {
+    border: 3px solid black;
+    opacity: 1;
+}
+
+
+div.bigbutton#truck {
+    background-color: #71AA4C;
+}
+
+div.bigbutton#trailer {
+    background-color:  #F0AF5B;
+}
+
+div.bigbutton#psv {
+    background-color: #DB4B4B;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0em;
+    left: 10%;
+    width: 80%;
+    margin: auto;
+}
+
+#resultcard {
+    border: 3px solid #F5F5DC;
+    background-color: #676457;
+    color: #F5F5DC;
+}
+
+form {
+    padding: 0.5em;
+}
+
+form br {
+    padding: 1em;
+}

@@ -64,17 +64,15 @@ def create_app():
                 aresults.append(tmp)
 
             return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=aresults)
-
-            # blob = "<h1>Truck</h1><b>{0}</b> Result{1}:<br>".format(resultcount, 's' if (resultcount > 1) else '')
-            # for result in results:
-            #     blob += "<b>DTP Number:</b> {0} - <b>Make:</b> {1}<br>".format(result["DTpNumber"],
-            #                                                                    dtp.dtp_vehmake(dbh, result["MakeId"]))
-            #     blob += "<b>GVW:</b>{0}<br><b>GTW:</b>{1}".format(result["GVW_DesignWeight"], result["GTW_DesignWeight"])
-
-            # return blob
         else:
-            #TODO: nice actual page here using a template instead.
-            return "<form action='/truck' method='post'><input type='text' id='dtp' name='dtp'><br><input type='submit' value='Submit'></form>"
+            vehtype = dtp.dtp_fetch_vehtype(dbh)
+            vehmake = dtp.dtp_fetch_vehmake(dbh)
+            braketype = dtp.dtp_fetch_braketype(dbh)
+            return render_template('truck.htm',
+                                   error = error,
+                                   vehtype = vehtype,
+                                   vehmake = vehmake,
+                                   braketype = braketype )
 
 
     ################################################################################
