@@ -9,9 +9,27 @@ def dtp_vehtype(dbh, vehtype):
     if dbh is not None:
         return dbh.execute("SELECT Type FROM VehType WHERE TypeId=(?)", (vehtype,)).fetchone()[0]
 
+# Note: Specifically filters out trailer typecodes because of
+# where we want to use this (on the truck specific search)
+
+# Typecodes ending in 'D' are drawbar trailer, 'S' is semi-trailer,
+# 'C' are centre-drawbar.
+def dtp_fetch_vehtype(dbh):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM VehType WHERE TypeId NOT LIKE '_D' AND TypeID NOT LIKE '_S' AND TypeID NOT LIKE '_C' ORDER BY Type").fetchall()
+
+# For completeness, here's the one that gives you the opposite of fetch_vehtype.
+def dtp_fetch_trailtype(dbh):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM VehType WHERE TypeId LIKE '_D' OR TypeId LIKE '_S' OR TypeId LIKE '_C' ORDER BY Type").fetchall()
+
 def dtp_vehmake(dbh, vehmake):
     if dbh is not None:
         return dbh.execute("SELECT Make FROM VehMake WHERE MakeId=(?)", (vehmake,)).fetchone()[0]
+
+def dtp_fetch_vehmake(dbh):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM VehMake ORDER BY Make").fetchall()
 
 def dtp_brakeroutine(dbh, routineid):
     if dbh is not None:
@@ -20,6 +38,10 @@ def dtp_brakeroutine(dbh, routineid):
 def dtp_braketype(dbh, typeid):
     if dbh is not None:
         return dbh.execute("SELECT Type FROM braktype WHERE TypeId=(?)", (typeid,)).fetchone()[0]
+
+def dtp_fetch_braketype(dbh):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM braktype ORDER BY Type").fetchall()
 
 def dtp_fetch(dbh, dtp):
     if dbh is not None:
