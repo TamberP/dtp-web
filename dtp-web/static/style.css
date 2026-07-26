@@ -102,3 +102,26 @@ form {
 form br {
     padding: 1em;
 }
+
+#whoopsie {
+    width: 25%;
+    margin: auto;
+    background-color: #DB4b4b;
+    color: white;
+    text-shadow: 3px 3px 5px black;
+    text-align: center;
+    border-radius: 10px;
+    border: 10px solid pink;
+    border-image: repeating-linear-gradient(
+	-55deg,
+	#000,
+	#000 20px,
+	#F0AF5B 20px,
+	#F0AF5B 40px
+    ) 10;
+    padding: 1em;
+}
+
+#whoopsie em {
+    font-size: x-large;
+}

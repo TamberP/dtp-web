@@ -7,7 +7,15 @@
   <body>
     <div id="header">
       <a href="/">Main Menu</a>
+      <br>
     </div>
+    {% if error %}
+    <div id="whoopsie">
+      <h2>Well that didn't work!</h2>
+      <em>{{ error }}</em><br><br>
+      <a href="/truck">Try again?</a>
+    </div>
+    {% endif %}
     <h2>DTP Search</h2>
     <form action="/truck" method="post">
       <label for="dtp">DTP No.:</label>

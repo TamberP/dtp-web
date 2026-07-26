@@ -40,39 +40,41 @@ def create_app():
         else:
             dtpmaybe = request.args.get('dtp')
 
-        if(dtpmaybe is not None):
-            # todo: validate the dtp
-            results = dtp.dtp_fetch(dbh, dtpmaybe)
-            aresults = []
-            resultcount = len(results)
-            if(resultcount == 0):
-                return "No results found."
+        try:
+            if(dtpmaybe is not None):
+                # todo: validate the dtp
+                results = dtp.dtp_fetch(dbh, dtpmaybe)
+                aresults = []
+                resultcount = len(results)
+                if(resultcount == 0):
+                    return render_template('truck.htm', error = "No results found")
 
-            for i in results:
-                tmp = dict(i)
-#                print(tmp)
-                tmp["MakeStr"] = dtp.dtp_vehmake(dbh, tmp["MakeId"])
-                tmp["TypeStr"] = dtp.dtp_vehtype(dbh, tmp["TypeId"])
-                woem = dtp.dtp_brakeroutine(dbh, tmp["BrakeRoutine"])[0].split(",")
-                tmp["BrakeRoutineServ"] = woem[0]
-                tmp["BrakeRoutineSec"]  = woem[1]
-                tmp["BrakeRoutinePark"] = woem[2]
-                tmp["FoundServStr"] = dtp.dtp_braketype(dbh, tmp["FoundServBrake"])
-                tmp["FoundSecStr"] = dtp.dtp_braketype(dbh, tmp["FoundSecBrake"])
-                tmp["FoundParkStr"] = dtp.dtp_braketype(dbh, tmp["FoundParkBrake"])
-                tmp["AxleCount"] = int(tmp["TypeId"][0])
-                aresults.append(tmp)
+                for i in results:
+                    tmp = dict(i)
 
-            return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=aresults)
-        else:
-            vehtype = dtp.dtp_fetch_vehtype(dbh)
-            vehmake = dtp.dtp_fetch_vehmake(dbh)
-            braketype = dtp.dtp_fetch_braketype(dbh)
-            return render_template('truck.htm',
-                                   error = error,
-                                   vehtype = vehtype,
-                                   vehmake = vehmake,
-                                   braketype = braketype )
+                    tmp["MakeStr"] = dtp.dtp_vehmake(dbh, tmp["MakeId"])
+                    tmp["TypeStr"] = dtp.dtp_vehtype(dbh, tmp["TypeId"])
+                    woem = dtp.dtp_brakeroutine(dbh, tmp["BrakeRoutine"])[0].split(",")
+                    tmp["BrakeRoutineServ"] = woem[0]
+                    tmp["BrakeRoutineSec"]  = woem[1]
+                    tmp["BrakeRoutinePark"] = woem[2]
+                    tmp["FoundServStr"] = dtp.dtp_braketype(dbh, tmp["FoundServBrake"])
+                    tmp["FoundSecStr"] = dtp.dtp_braketype(dbh, tmp["FoundSecBrake"])
+                    tmp["FoundParkStr"] = dtp.dtp_braketype(dbh, tmp["FoundParkBrake"])
+                    tmp["AxleCount"] = int(tmp["TypeId"][0])
+                    aresults.append(tmp)
+
+                    return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=aresults)
+            else:
+                vehtype = dtp.dtp_fetch_vehtype(dbh)
+                vehmake = dtp.dtp_fetch_vehmake(dbh)
+                braketype = dtp.dtp_fetch_braketype(dbh)
+                return render_template('truck.htm',
+                                       vehtype = vehtype,
+                                       vehmake = vehmake,
+                                       braketype = braketype )
+        except:
+            return render_template('truck.htm', error = "Code exception! Beat the dev!"), 500
 
 
     ################################################################################
