@@ -5,6 +5,7 @@ import os
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask import redirect, url_for
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
@@ -91,19 +92,51 @@ def create_app():
         if(request.method == 'POST'):
             if(request.form['dtp']):
                 dtpmaybe = request.form['dtp']
-
         else:
             dtpmaybe = request.args.get('dtp')
 
         if(dtpmaybe is not None):
             trailer = dtp.dtp_t_parse(dtpmaybe)
             if(trailer is None):
-                return "No results found"
+                return render_template('trailer.htm', error = "No result found, or incorrect DTP")
 
             trailer["TypeStr"] = dtp.dtp_vehtype(dbh, trailer["Type"])
             return render_template('trailer_result.htm', dtpmaybe=dtpmaybe, rtrailer=trailer)
         else:
-            return "<form action='/trailer' method='post'><input type='text' id='dtp' name='dtp'><br><input type='submit' value='Submit'></form>"
+            vehtype = dtp.dtp_fetch_trailtype(dbh)
+            return render_template('trailer.htm', vehtype=vehtype)
+
+    @app.route('/traileradv', methods=['POST', 'GET'])
+    def trailer_adv():
+        dbh = db.get_db()
+        error = None
+        # advanced trailer search
+        if(request.method == 'POST'):
+            vehtype = None
+            gvw = None
+            taw = None
+            if(request.form['vehtype']):
+                vehtype = request.form['vehtype']
+
+            if(request.form['gvw']):
+                gvw = request.form['gvw']
+                if(gvw < 0 or gvw > 250000):
+                    return render_template('trailer.htm', error = "Invalid GVW given.")
+
+            if(request.form['taw']):
+                taw = request.form['taw']
+                if(taw < 0 or taw > 250000):
+                    return render_template('trailer.htm', error = "Invalid TAW given.")
+
+            numaxles = int(vehtype[0])
+            if(numaxles > 5 or numaxles < 0):
+                # We should never get here, but you never know.
+                return render_template('trailer.htm', error = "Impossible axle count. Stop playing silly buggers.")
+
+
+            return "{0} axles!".format(numaxles)
+        else:
+            return redirect(url_for('trailer'))
 
     ## Do the thing!
     db.init_app(app)

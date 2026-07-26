@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>dtp-web Trailer DTP Search</title>
+    <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="header">
+      <a href="/">Main Menu</a>
+      <br>
+    </div>
+    {% if error %}
+    <div id="whoopsie">
+      <h2>Well that didn't work!</h2>
+      <em>{{ error }}</em><br><br>
+      <a href="/trailer">Try again?</a>
+    </div>
+    {% endif %}
+    <h2>DTP Search</h2>
+    <form action="/trailer" method="post">
+      <label for="dtp">DTP No.:</label>
+      <input type="number" id="dtp" name="dtp" minlength="6" maxlength="6" size="6" placeholder="XXXXXX">
+      <br>
+      <input type="submit" value="Search">
+    </form>
+    <hr>
+    <h2>Advanced Search</h2>
+    <form action="/traileradv" method="post">
+      <label for="vehtype">Trailer Type:</label>
+      <select id="vehtype" name="vehtype">
+	<option value="">None</option>
+	{% for type in vehtype %}
+	<option value="{{ type[0] }}">{{ type[1] }}</option>
+	{% endfor %}
+	<option value="8D">nah</option>
+      </select>
+      <br>
+      <label for="gvw">Gross Weight (kg):</label>
+      <input type="number" id="gvw" name="gvw" size="6">
+      <br>
+      <label for="taw">Axle Weight (kg):</label>
+      <input type="number" id="taw" name="taw" size="6">
+      <br>
+      <input type="submit" value="Search">
+    </form>
+  </body>
+</html>
