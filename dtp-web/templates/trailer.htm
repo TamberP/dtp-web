@@ -34,13 +34,46 @@
 	{% endfor %}
       </select>
       <br>
-      <label for="gvw">Gross Weight (kg):</label>
+      <label for="gvw">Design Gross Weight (kg):</label>
       <input type="number" id="gvw" name="gvw" size="6">
       <br>
-      <label for="taw">Axle Weight (kg):</label>
+      <label for="taw">Total Axle Weight (kg):</label>
       <input type="number" id="taw" name="taw" size="6">
       <br>
-      <input type="submit" value="Search">
+      <table>
+	<tr><th>ABS</th><th>LSV</th><th>EBS</th><th>Type Approved</th></tr>
+	<tr>
+	  <td><input type="checkbox" id="abs" name="abs"></td>
+	  <td><input type="checkbox" id="lsv" name="lsv"></td>
+	  <td><input type="checkbox" id="ebs" name="ebs"></td>
+	  <td><input type="checkbox" id="typeappr" name="typeappr"></td>
+	</tr>
+      </table>
+      <table>
+	<tr><th colspan=2>Design Weights(kg)</th><th>Park Brake</th></tr>
+	<tr>
+	  <th><label for="ax1weight">Axle 1:</label></th>
+	  <td><input type="number" id="ax1weight" name="ax1weight" size="5"></td>
+	  <td><input type="checkbox" id="ax1park" name="ax1park"></td>
+	</tr>
+	<tr>
+	  <th><label for="ax2weight">Axle 2:</label></th>
+	  <td><input type="number" id="ax2weight" name="ax2weight" size="5"></td>
+	  <td><input type="checkbox" id="ax2park" name="ax2park"></td>
+	</tr>
+	<tr>
+	<th><label for="ax3weight">Axle 3:</label></th>
+	<td><input type="number" id="ax3weight" name="ax3weight" size="5"></td>
+	<td><input type="checkbox" id="ax3park" name="ax3park"></td>
+	</tr>
+	<tr>
+	  <th><label for="ax4weight">Axle 4:</label></th>
+	  <td><input type="number" id="ax4weight" name="ax4weight" size="5"></td>
+	  <td><input type="checkbox" id="ax4park" name="ax4park"></td>
+	</tr>
+      </table>
+      <br>
+      <input type="submit" value="Search"> - <input type="reset" value="Reset">
     </form>
   </body>
 </html>

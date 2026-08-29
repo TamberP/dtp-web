@@ -122,26 +122,157 @@ def create_app():
                 return render_template('trailer.htm', vehtype=vehtype,
                                        error = "Invalid trailer type selected.")
 
+            numaxles = int(vehtype[0])
+            if(numaxles >= 5 or numaxles < 1):
+                # We should never get here, but you never know.
+                return render_template('trailer.htm', vehtype=vehtype,
+                                       error = "Impossible axle count. Stop playing silly buggers.")
+
             if(request.form['gvw']):
                 gvw = int(request.form['gvw'])
                 if(gvw < 0 or gvw > 250000):
-                    return render_template('trailer.htm', vehtype=vehtype,
+                    return render_template('trailer.htm', vehtype=dtp.dtp_fetch_trailtype(dbh),
                                            error = "Invalid GVW given.")
 
             if(request.form['taw']):
                 taw = int(request.form['taw'])
                 if(taw < 0 or taw > 250000):
-                    return render_template('trailer.htm', vehtype=vehtype,
+                    return render_template('trailer.htm', vehtype=dtp.dtp_fetch_trailtype(dbh),
                                            error = "Invalid TAW given.")
+            else:
+                taw = 0
+                # Sum up given axle weights to get a TAW
+                if(request.form['ax1weight']):
+                    taw += int(request.form['ax1weight'])
+                if(request.form['ax2weight'] and (numaxles > 1)):
+                    taw += int(request.form['ax2weight'])
+                if(request.form['ax3weight'] and (numaxles > 2)):
+                    taw += int(request.form['ax3weight'])
+                if(request.form['ax4weight'] and (numaxles > 3)):
+                    taw += int(request.form['ax4weight'])
 
-            numaxles = int(vehtype[0])
-            if(numaxles => 5 or numaxles < 1):
-                # We should never get here, but you never know.
-                return render_template('trailer.htm', vehtype=vehtype,
-                                       error = "Impossible axle count. Stop playing silly buggers.")
+
+            # Calculate DTP digits
+            dtp_a = numaxles
+            match vehtype[1]:
+                case 'S':
+                    # dtp_bcd requires some lookup, here.
+                    lookup_result = dtp.dtp_aweights_r(dbh, numaxles, gvw, taw)
+                    if(lookup_result is not None):
+                        dtp_bcd = lookup_result['DTP']
+                    else:
+                        dtp_bcd = 'XXX'
+                case 'C':
+                    # Centre drawbar
+                    # 1 axle becomes 5, 2 becomes 6, 3 becomes 7, 4C isn't permitted
+                    if(numaxles > 3):
+                        return render_template('trailer.htm', vehtype=dtp.dtp_fetch_trailtype(dbh),
+                                               error = "4-axle centre drawbar trailer? How? {0} - {1}".format(numaxles,
+                                                                                                              vehtype))
+                    dtp_a += 4
+                    dtp_bcd = (gvw / 100)
+                    taw = gvw
+                case 'D':
+                    # Full drawbar style (i.e. dolly-style)
+                    match numaxles:
+                        case 1:
+                            return render_template('trailer.htm', vehtype=dtp.dtp_fetch_trailtype(dbh),
+                                                   error = "Single-axle D type trailer? How? {0} - {1}".format(numaxles,
+                                                                                                               vehtype))
+                        case 2:
+                            dtp_a += 6
+                        case 3:
+                            dtp_a += 6
+                        case 4:
+                            dtp_a = 0
+                    dtp_bcd = (gvw / 100)
+                    taw = gvw
+
+            # DTP E, which axles have park brake, comes from manual input
+            scrundle = list("0000")
+            if(request.form.get('ax1park') != None):
+                scrundle[0] = "1"
+            if(request.form.get('ax2park') != None):
+                scrundle[1] = "1"
+            if(request.form.get('ax3park') != None):
+                scrundle[2] = "1"
+            if(request.form.get('ax4park') != None):
+                scrundle[3] = "1"
+
+            scrundle = "".join(scrundle)
+
+            match scrundle:
+                case '1000':
+                    dtp_e = '1'
+                case '0100':
+                    dtp_e = '2'
+                case '1100':
+                    dtp_e = '3'
+                case '0010':
+                    dtp_e = '4'
+                case '1010':
+                    dtp_e = '5'
+                case '0110':
+                    dtp_e = '6'
+                case '1110':
+                    dtp_e = '7'
+                case '0001':
+                    dtp_e = '8'
+                case '1001':
+                    dtp_e = '9'
+                case '0101':
+                    dtp_e = 'A'
+                case '1101':
+                    dtp_e = 'B'
+                case '0011':
+                    dtp_e = 'C'
+                case '1011':
+                    dtp_e = 'D'
+                case '0111':
+                    dtp_e = 'E'
+                case '1111':
+                    dtp_e = 'F'
+                case _:
+                    dtp_e = 'X'
+
+            # DTP F also comes from manual input (TODO)
+            dtp_f = 'X'
+            scrundle = list("0000")
+            if(request.form.get('typeappr') != None):
+                scrundle[0] = "1"
+            if(request.form.get('abs') != None):
+                scrundle[1] = "1"
+            if(request.form.get('lsv') != None):
+                scrundle[2] = "1"
+            if(request.form.get('ebs') != None):
+                scrundle[3] = "1"
+            scrundle = "".join(scrundle)
+
+            match scrundle:
+                case '0000':
+                    dtp_f = '0'
+                case '1000': # Type Approved
+                    dtp_f = '1'
+                case '0100': # ABS
+                    dtp_f = '2'
+                case '1100': # Type Approved & ABS
+                    dtp_f = '3'
+                case '0010': # LSV
+                    dtp_f = '4'
+                case '1010': # Type Approved & LSV
+                    dtp_f = '5'
+                case '0110': # ABS & LSV
+                    dtp_f = '6'
+                case '1110': # Type Approved & ABS & LSV
+                    dtp_f = '7'
+                case '0001': # EBS
+                    dtp_f = '8'
+                case _: # Not a valid combo, because EBS includes ABS & LSV
+                    dtp_f = 'X'
 
 
-            return "{0} axles!".format(numaxles)
+            calculated_dtp = "{0}{1}{2}{3}".format(dtp_a, dtp_bcd, dtp_e, dtp_f)
+            return render_template('trailer_result_adv.htm', dtp=calculated_dtp, vehtype=vehtype, gvw=gvw, taw=taw)
         else:
             return redirect(url_for('trailer'))
 
