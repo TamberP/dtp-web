@@ -98,13 +98,13 @@ def create_app():
         if(dtpmaybe is not None):
             trailer = dtp.dtp_t_parse(dtpmaybe)
             if(trailer is None):
-                return render_template('trailer.htm', error = "No result found, or incorrect DTP")
+                return render_template('trailer.htm', vehtype=dtp.dtp_fetch_trailtype(dbh),
+                                       error = "No result found, or incorrect DTP")
 
             trailer["TypeStr"] = dtp.dtp_vehtype(dbh, trailer["Type"])
             return render_template('trailer_result.htm', dtpmaybe=dtpmaybe, rtrailer=trailer)
         else:
-            vehtype = dtp.dtp_fetch_trailtype(dbh)
-            return render_template('trailer.htm', vehtype=vehtype)
+            return render_template('trailer.htm', vehtype=dtp.dtp_fetch_trailtype(dbh))
 
     @app.route('/traileradv', methods=['POST', 'GET'])
     def trailer_adv():
@@ -117,21 +117,28 @@ def create_app():
             taw = None
             if(request.form['vehtype']):
                 vehtype = request.form['vehtype']
+            else:
+                vehtype = dtp.dtp_fetch_trailtype(dbh)
+                return render_template('trailer.htm', vehtype=vehtype,
+                                       error = "Invalid trailer type selected.")
 
             if(request.form['gvw']):
-                gvw = request.form['gvw']
+                gvw = int(request.form['gvw'])
                 if(gvw < 0 or gvw > 250000):
-                    return render_template('trailer.htm', error = "Invalid GVW given.")
+                    return render_template('trailer.htm', vehtype=vehtype,
+                                           error = "Invalid GVW given.")
 
             if(request.form['taw']):
-                taw = request.form['taw']
+                taw = int(request.form['taw'])
                 if(taw < 0 or taw > 250000):
-                    return render_template('trailer.htm', error = "Invalid TAW given.")
+                    return render_template('trailer.htm', vehtype=vehtype,
+                                           error = "Invalid TAW given.")
 
             numaxles = int(vehtype[0])
-            if(numaxles > 5 or numaxles < 0):
+            if(numaxles => 5 or numaxles < 1):
                 # We should never get here, but you never know.
-                return render_template('trailer.htm', error = "Impossible axle count. Stop playing silly buggers.")
+                return render_template('trailer.htm', vehtype=vehtype,
+                                       error = "Impossible axle count. Stop playing silly buggers.")
 
 
             return "{0} axles!".format(numaxles)
