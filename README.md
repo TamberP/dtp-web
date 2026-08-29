@@ -29,7 +29,15 @@ The database is pre-populated with the November 2020 DTP update
 # Dependencies
 
 Currently:
-- Flask (3.1.3-ish), and its dependencies
+- Flask (3.1.3-ish)
+
+and its dependencies:
+- blinker (1.9.0)
+- click   (8.4.2)
+- itsdangerous (2.2.0)
+- Jinja2  (3.1.6)
+- MarkupSafe (3.0.3)
+- Werkzeug (3.1.8)
 
 # Licensing
 ## The Database

@@ -1,0 +1,2 @@
+## The web framework that does most of the heavy lifting
+Flask==3.1.3
