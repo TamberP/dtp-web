@@ -51,6 +51,11 @@ def dtp_aweights(dbh, numaxles, dtp):
     if dbh is not None:
         return dbh.execute("SELECT * FROM {0}trl WHERE DTP=(?);".format(str("A"*numaxles)), (dtp,)).fetchone()
 
+def dtp_aweights_r(dbh, numaxles, gvw, taw):
+    if dbh is not None:
+        return dbh.execute("SELECT * FROM {0}trl WHERE GVW=(?) AND TotalAxleWeight=(?)".format(str("A"*numaxles)),
+                           (gvw, taw)).fetchone()
+
 def dtp_t_parse(dtp):
     if(dtp is not None):
         dbh = db.get_db()
