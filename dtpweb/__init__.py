@@ -276,6 +276,11 @@ def create_app():
         else:
             return redirect(url_for('trailer'))
 
+    @app.route('/psv', methods=['POST', 'GET'])
+    def psv():
+        return "<html><body><h1>Not Implemented</h1><a href='/'>Main Menu</a></body></html>"
+
+
     ## Do the thing!
     db.init_app(app)
     return app
