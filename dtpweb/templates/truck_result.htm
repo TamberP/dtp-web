@@ -13,11 +13,11 @@
       <li>
 	<table>
 	  <tr>
-	    <th>DTP</th> <td><tt>{{truck["DTpNumber"] }}</tt></td>
+	    <th>DTP</th> <td><tt>{{truck["DTpNumber"] }}<u>{{ truck["Suffixes"] }}</u></tt></td>
 	  </tr>
 	  <tr>
 	    <th>Type</th> <td><tt>{{ truck["TypeStr"] }}</tt></td>
-	    <th>Make</th> <td><tt>{{ truck["MakeStr"] }} ({{ truck["MakeId"] }})</tt></td>
+	    <th>Make</th> <td><tt>{{ truck["MakeStr"] }}</tt></td>
 	  </tr>
 	  <tr>
 	    <th>Gross Weight</th> <td><tt>{{ truck["GVWDesign"] }}kg</tt></td>
@@ -31,10 +31,18 @@
 	  </tr>
 	  <tr>
 	    <th colspan=2 style="text-align: center;">Axle Design  Weights</th>
+	    <td>
+	      <tt>ABS {% if truck["ABSFitted"] == 'Yes' %}✔️
+		{% elif truck["ABSOption"] == 'Yes' %} OPT {% else %} ✖️ {% endif %}</tt>
+	      <tt>LSV {% if truck["LSVFitted"] == 'Yes' %}✔️
+		{% elif truck["LSVOption"] == 'Yes' %} OPT {% else %} ✖️ {% endif %}</tt>
+	    </td>
 	  </tr>
 	  {% for x in range(1, (truck["AxleCount"]+1)): %}
 	  <tr>
-	    <th>Axle {{ x }}</th> <td><tt>{{ truck["Axle{0}DesignWeight".format(x)] }}kg</tt></td>
+	    <th>Axle {{ x }}</th>
+	    <td><tt>{{ truck["Axle{0}DesignWeight".format(x)] }}kg</tt></td>
+	    <td><tt>{% if truck["Axle{0}Modulation".format(x)] == 'Yes' %} [Modulated] {% endif %}</tt></td>
 	  </tr>
 	  {% endfor %}
 	  <tr><th colspan=4><hr></th></tr>
@@ -44,19 +52,21 @@
 	  <tr>
 	    <th>Service</th> <td><tt>{{ truck["BrakeRoutineServ"] }}</tt></td>
 	  </tr>
-	  <tr><th></th> <td><tt>({{ truck["ServiceType"] }})</td></tt></tr>
+	  <tr><td colspan=2 ><tt>({{ truck["ServiceType"] }})</tt></td></tr>
 	  <tr>
 	    <th>Secondary</th> <td><tt>{{ truck["BrakeRoutineSec"] }}</tt></td>
 	  </tr>
-	  <tr><th></th> <td><tt>({{ truck["SecondaryType"] }})</td></tt></tr>
+	  <tr><td colspan=2><tt>({{ truck["SecondaryType"] }})</tt></td></tr>
 	  <tr>
-	    <th>Parking</th> <td><tt>{{ truck["BrakeRoutinePark"] }}</tt></td>
+	    <th>Parking</th> <td><tt>{{ truck["BrakeRoutinePark"] }}
+		{% if truck["ParkOnDiff"] == 'Yes' %}<u>On Transmission</u>{% endif %}
+	    </tt></td>
 	  </tr>
-	  <tr><th></th><td><tt>({{ truck["ParkType"] }})</tt></td></tr>
+	  <tr><td colspan=2><tt>({{ truck["ParkType"] }})</tt></td></tr>
 	  <tr><th colspan=4><hr></th></tr>
 	</table>
-      </div>
-    </li>
+      </li>
+    </div>
     {% endfor %}
     </ul>
 
