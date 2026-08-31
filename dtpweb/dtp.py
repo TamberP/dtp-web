@@ -33,11 +33,22 @@ def dtp_fetch_vehmake(dbh):
 
 def dtp_brakeroutine(dbh, routineid):
     if dbh is not None:
-        return dbh.execute("SELECT \"Routine\" FROM BrakRoute WHERE RoutineId=(?)", (routineid,)).fetchone()
+        return dbh.execute("SELECT \"Routine\" FROM BrakRoute WHERE RoutineId=(?)", (routineid,)).fetchone()[0]
+
+def dtp_brakeroutine_s(dbh, routineid):
+    if dbh is not None:
+        result = dbh.execute("SELECT \"Routine\" FROM BrakRoute WHERE RoutineId=(?)", (routineid,)).fetchone()[0]
+        return result.split(",")
+
+def dtp_splitroutine(dbh, routineid):
+    if dbh is not None:
+        return dbh.execute("SELECT \"Routine\" from SplitRoutine WHERE RoutineId=(?)", (routineid,)).fetchone()
 
 def dtp_braketype(dbh, typeid):
     if dbh is not None:
-        return dbh.execute("SELECT Type FROM braktype WHERE TypeId=(?)", (typeid,)).fetchone()[0]
+        tmp = dbh.execute("SELECT Type FROM braktype WHERE TypeId=(?)", (typeid,)).fetchone()
+        if tmp is not None:
+            return tmp[0]
 
 def dtp_fetch_braketype(dbh):
     if dbh is not None:
@@ -208,5 +219,54 @@ def dtp_t_parse(dtp):
         trailer["Axle3Weight"] = aweights['Axle3Weight'] if(trailer["AxleCount"] > 2) else None
         trailer["Axle4Weight"] = aweights['Axle4Weight'] if(trailer["AxleCount"] > 3) else None
         return trailer
-#    else:
-#        return None
+
+
+def master_rowparse(raw):
+    if(raw is not None):
+        dbh = db.get_db()
+        testdata = {}
+        testdata["DTpNumber"] = raw["DTpNumber"]
+        testdata["MakeId"] = raw["MakeId"]
+        testdata["MakeStr"] = dtp_vehmake(dbh, raw["MakeId"])
+        testdata["TypeId"] = raw["TypeId"]
+        testdata["TypeStr"] = dtp_vehtype(dbh, raw["TypeId"])
+        testdata["AxleCount"] = int(raw["TypeId"][0])
+        testdata["Suffixes"] = raw["DuplicateID"] if (raw["DuplicateID"] is not None) else ''
+        testdata["Second_Front_Axle_Steer"] = 'Yes' if(raw["SecFrontAxleSteered"] == 1) else 'No'
+        testdata["Trans_Sec_Park_Brake"] = 'Yes' if(raw["TransSecParkBrake"] == 1) else 'No'
+        testdata["Secondary_only_Tractor"] = 'Yes' if(raw["SecBrakeOnlyOnTrac"] == 1) else 'No'
+        testdata["PrePriorPost68"] = 'Yes' if(raw["PPPSelector"] == 1) else 'No'
+        testdata["GVWDesign"] = (raw["GVW_DesignWeight"] * 10)
+        testdata["GTWDesign"] = (raw["GTW_DesignWeight"] * 10)
+        testdata["Axle1DesignWeight"] = (raw["Axle1DesignWeight"] * 10)
+        testdata["Axle2DesignWeight"] = (raw["Axle2DesignWeight"] * 10)
+        testdata["Axle3DesignWeight"] = (raw["Axle3DesignWeight"] * 10)
+        testdata["Axle4DesignWeight"] = (raw["Axle4DesignWeight"] * 10)
+        testdata["Axle5DesignWeight"] = (raw["Axle5DesignWeight"] * 10)
+        testdata["Axle1Modulation"] = 'Yes' if(raw["ModAxle1Affect"] == 1) else 'No'
+        testdata["Axle2Modulation"] = 'Yes' if(raw["ModAxle2Affect"] == 1) else 'No'
+        testdata["Axle3Modulation"] = 'Yes' if(raw["ModAxle3Affect"] == 1) else 'No'
+        testdata["Axle4Modulation"] = 'Yes' if(raw["ModAxle4Affect"] == 1) else 'No'
+        testdata["Axle5Modulation"] = 'Yes' if(raw["ModAxle5Affect"] == 1) else 'No'
+        testdata["ABSFitted"] = 'Yes' if(raw["ABSFitted"] == 1) else 'No'
+        testdata["ABSOption"] = 'Yes' if(raw["ABSOption"] == 1) else 'No'
+        testdata["LSVFitted"] = 'Yes' if(raw["LSVFitted"] == 1) else 'No'
+        testdata["LSVOption"] = 'Yes' if(raw["LSVOption"] == 1) else 'No'
+        testdata["DoubleDrive"] = 'Yes' if(raw["DoubleDriveFitted"] == 1) else 'No'
+        testdata["ThirdDiff"] = 'Yes' if(raw["AskThirdDiffFitted"] == 1) else 'No'
+        testdata["ParkOnDiff"] = 'Yes' if(raw["SecParkBrakeOnDiffAxle"] == 1) else 'No'
+        testdata["ServBrakeDist"] = raw["ServiceBrakeDestrib"]
+        testdata["SecBrakeDist"] = (raw["SecBrakeDestrib"]) if(raw["SecBrakeDestrib"] != 99) else 100
+        testdata["ServiceType"] = dtp_braketype(dbh, raw["FoundServBrake"])
+        testdata["SecondaryType"] = dtp_braketype(dbh, raw["FoundSecBrake"])
+        testdata["ParkType"] = dtp_braketype(dbh, raw["FoundParkBrake"])
+        testdata["BrakeRoutine"] = dtp_brakeroutine_s(dbh, raw["BrakeRoutine"])
+        # break out brake routine strings
+        testdata["BrakeRoutineServ"] = testdata["BrakeRoutine"][0]
+        testdata["BrakeRoutineSec"]  = testdata["BrakeRoutine"][1]
+        testdata["BrakeRoutinePark"] = testdata["BrakeRoutine"][2]
+
+        testdata["SplitRoutine"] = dtp_splitroutine(dbh, raw["SplitRoutine"])
+        return testdata
+    else:
+        return None

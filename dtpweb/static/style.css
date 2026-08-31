@@ -1,11 +1,3 @@
-background-color: #141A1F;
-color: #F5F5DC;
-
-@media (prefers-color-scheme: light){
-    background-color: #F5F5DC;
-    color: #141A1F;
-}
-
 body {
     width: 90%;
     margin: auto;
@@ -13,23 +5,42 @@ body {
     font-family: sans-serif;
 }
 
-a {
-    color: #F5F5DC;
-}
+@media (prefers-color-scheme: dark){
+    body{
+	background-color: #593500;
+	background-image: url(/static/dark-wood.png); /* Omar Alvarado */
+	color: #F5F5DC;
+    }
 
-a:hover {
-    text-decoration: underline wavy;
-    text-shadow: 3px 3px 5px black;
-}
-
-@media (prefers-color-scheme: light){
     a {
-	color: #2B2119;
+	color: #F5F5DC;
+	text-decoration: underline;
     }
 
     a:hover {
-	text-shadow: 3px 3px 5px white;
+	text-decoration: underline wavy;
+	text-shadow: 3px 3px 5px darkgrey;
     }
+
+}
+
+@media (prefers-color-scheme: light){
+    body{
+	background-color: #F5F5DC;
+	background-image: url(/static/dark-wood.png); /* Omar Alvarado */
+	color: #141A1F;
+    }
+
+    a {
+	color: #1F1A1F;
+	text-decoration: underline;
+    }
+
+    a:hover {
+	text-decoration: underline wavy;
+	text-shadow: 3px 3px 5px grey;
+    }
+
 }
 
 
@@ -51,11 +62,12 @@ div.bigbutton {
     height: 5em;
     padding: 3%;
     display: inline-block;
-    border: 3px solid;
+    border: 3px solid #F5F5DC;
     border-radius: 10px;
     text-align: center;
     opacity: 0.8;
     font-size: 2em;
+    color: #222B32;
 }
 
 div.bigbutton p.desc {
@@ -67,6 +79,7 @@ div.bigbutton p.desc {
 div.bigbutton:hover {
     border: 3px solid black;
     opacity: 1;
+    color: #F5F5DC;
 }
 
 
@@ -83,17 +96,48 @@ div.bigbutton#psv {
 }
 
 #footer {
-    position: absolute;
+    position: fixed;
     bottom: 0em;
     left: 10%;
     width: 80%;
     margin: auto;
+    padding: 1em;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
-#resultcard {
+ul.resultstack {
+    columns: 2;
+}
+
+li.resultstack {
+    margin: 0.5em;
+}
+
+.resultcard {
+    width: 45%;
     border: 3px solid #F5F5DC;
-    background-color: #676457;
-    color: #F5F5DC;
+    border-radius: 1em;
+    background-color: #FDFDDC;
+    background-image: url(/static/lined-paper.png); /* Are Sundnes */
+    color: #222B32;
+    margin: 1em;
+    display: inline-block;
+    box-shadow: 12px 12px 6px rgba(0, 0, 0, 0.2);
+}
+
+.resultcard th {
+    color: black;
+    font-size: large;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    text-align: left;
+}
+
+.resultcard td {
+    font-size: large;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    text-align: right;
 }
 
 form {

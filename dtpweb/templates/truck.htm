@@ -6,6 +6,7 @@
   </head>
   <body>
     <div id="header">
+      <h1>Truck Search</h1>
       <a href="/">Main Menu</a>
       <a href="/help">Help?</a>
       <br>
@@ -27,53 +28,71 @@
     <hr>
     <h2>Advanced Search</h2>
     <form action="/truckadv" method="post">
-      <label for="make">Make:</label>
-      <select id="make" name="make">
-	<option VALUE="*">Any</option>
-	{% for make in vehmake %}
-	<option value="{{ make[0] }}">{{ make[1] }}</option>
-	{% endfor %}
-      </select>
-      <br>
-      <label for="vehtype">Vehicle Type:</label>
-      <select id="vehtype" name="vehtype">
-	<option value="*">Any</option>
-	{% for type in vehtype %}
-	<option value="{{ type[0] }}">{{ type[1] }}</option>
-	{% endfor %}
-      </select>
-      <br>
-      <label for="gvw">Gross Vehicle Weight (kg):</label>
-      <input type="number" name="gvw" id="gvw" maxlength="6" size="6">
-      <br>
-      <label for="gtw">Gross Train Weight (kg):</label>
-      <input type="number" name="gtw" id="gtw" maxlength="6" size="6">
-      <br>
-      <label for="braketype_serv">Service Brake Type:</label>
-      <select id="braketype_serv" name="braketype_serv">
-	<option value="*">Any</option>
-	{% for type in braketype %}
-	<option value="{{ type[0] }}">{{ type[1] }}</option>
-	{% endfor %}
-      </select>
-      <br>
-      <label for="braketype_sec">Secondary Brake Type:</label>
-      <select id="braketype_sec" name="braketype_sec">
-	<option value="*">Any</option>
-	{% for type in braketype %}
-	<option value="{{ type[0] }}">{{ type[1] }}</option>
-	{% endfor %}
-      </select>
-      <br>
-      <label for="braketype_park">Parking Brake Type:</label>
-      <select id="braketype_park" name="braketype_park">
-	<option value="*">Any</option>
-	{% for type in braketype %}
-	<option value="{{ type[0] }}">{{ type[1] }}</option>
-	{% endfor %}
-      </select>
+      <table>
+	<tr>
+	  <th><label for="make">Make:</label></th>
+	  <td><select id="make" name="make">
+	      <option VALUE="*">Any</option>
+	      {% for make in vehmake %}
+	      <option value="{{ make[0] }}">{{ make[1] }}</option>
+	      {% endfor %}
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th><label for="vehtype">Vehicle Type:</label></th>
+	  <td><select id="vehtype" name="vehtype">
+	      <option value="*">Any</option>
+	      {% for type in vehtype %}
+	      <option value="{{ type[0] }}">{{ type[1] }}</option>
+	      {% endfor %}
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th><label for="gvw">Gross Vehicle Weight (kg):</label></th>
+	  <td><input type="number" name="gvw" id="gvw" maxlength="6" size="6"></td>
+	</tr>
+	<tr>
+	  <th><label for="gtw">Gross Train Weight (kg):</label></th>
+	  <td><input type="number" name="gtw" id="gtw" maxlength="6" size="6"></td>
+	</tr>
+	<tr>
+	  <th><label for="braketype_serv">Service Brake Type:</label></th>
+	  <td><select id="braketype_serv" name="braketype_serv">
+	      <option value="*">Any</option>
+	      {% for type in braketype %}
+	      <option value="{{ type[0] }}">{{ type[1] }}</option>
+	      {% endfor %}
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th><label for="braketype_sec">Secondary Brake Type:</label></th>
+	  <td><select id="braketype_sec" name="braketype_sec">
+	      <option value="*">Any</option>
+	      {% for type in braketype %}
+	      <option value="{{ type[0] }}">{{ type[1] }}</option>
+	      {% endfor %}
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th><label for="braketype_park">Parking Brake Type:</label></th>
+	  <td><select id="braketype_park" name="braketype_park">
+	      <option value="*">Any</option>
+	      {% for type in braketype %}
+	      <option value="{{ type[0] }}">{{ type[1] }}</option>
+	      {% endfor %}
+	    </select>
+	  </td>
+	</tr>
+	</table>
       <br>
       <input type="submit" Value="Search">
       </form>
+    <div id="footer">
+      :)
+    </div>
   </body>
 </html>

@@ -41,41 +41,26 @@ def create_app():
         else:
             dtpmaybe = request.args.get('dtp')
 
-        try:
-            if(dtpmaybe is not None):
-                # todo: validate the dtp
-                results = dtp.dtp_fetch(dbh, dtpmaybe)
-                aresults = []
-                resultcount = len(results)
-                if(resultcount == 0):
-                    return render_template('truck.htm', error = "No results found")
+        if(dtpmaybe is not None):
+            # todo: validate the dtp
+            results = dtp.dtp_fetch(dbh, dtpmaybe)
+            aresults = []
+            resultcount = len(results)
+            if(resultcount == 0):
+                return render_template('truck.htm', error = "No results found")
 
-                for i in results:
-                    tmp = dict(i)
+            for i in results:
+                aresults.append(dtp.master_rowparse(i))
 
-                    tmp["MakeStr"] = dtp.dtp_vehmake(dbh, tmp["MakeId"])
-                    tmp["TypeStr"] = dtp.dtp_vehtype(dbh, tmp["TypeId"])
-                    woem = dtp.dtp_brakeroutine(dbh, tmp["BrakeRoutine"])[0].split(",")
-                    tmp["BrakeRoutineServ"] = woem[0]
-                    tmp["BrakeRoutineSec"]  = woem[1]
-                    tmp["BrakeRoutinePark"] = woem[2]
-                    tmp["FoundServStr"] = dtp.dtp_braketype(dbh, tmp["FoundServBrake"])
-                    tmp["FoundSecStr"] = dtp.dtp_braketype(dbh, tmp["FoundSecBrake"])
-                    tmp["FoundParkStr"] = dtp.dtp_braketype(dbh, tmp["FoundParkBrake"])
-                    tmp["AxleCount"] = int(tmp["TypeId"][0])
-                    aresults.append(tmp)
+            return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=aresults)
 
-                    return render_template('truck_result.htm', resultcount = resultcount, dtpmaybe=dtpmaybe, rtrucks=aresults)
-            else:
-                vehtype = dtp.dtp_fetch_vehtype(dbh)
-                vehmake = dtp.dtp_fetch_vehmake(dbh)
-                braketype = dtp.dtp_fetch_braketype(dbh)
-                return render_template('truck.htm',
-                                       vehtype = vehtype,
-                                       vehmake = vehmake,
-                                       braketype = braketype )
-        except:
-            return render_template('truck.htm', error = "Code exception! Beat the dev!"), 500
+        vehtype = dtp.dtp_fetch_vehtype(dbh)
+        vehmake = dtp.dtp_fetch_vehmake(dbh)
+        braketype = dtp.dtp_fetch_braketype(dbh)
+        return render_template('truck.htm',
+                               vehtype = vehtype,
+                               vehmake = vehmake,
+                               braketype = braketype )
 
     @app.route('/truckadv', methods=['POST', 'GET'])
     def truck_adv():
@@ -89,35 +74,38 @@ def create_app():
 
             srch_make = request.form.get('make')
             if(srch_make is not None and srch_make != "*"):
-                query.WHERE(str('MakeId="' + srch_make + '"'))
-#                srch_make = dtp.dtp_vehmake(dbh, srch_make)
+                query.WHERE(f'MakeId={int(srch_make)}')
 
             srch_type = request.form.get('vehtype')
             if(srch_type is not None and srch_type != "*"):
-                query.WHERE(str('TypeId="' + srch_type + '"'))
-#                srch_type = dtp.dtp_vehtype(dbh, srch_type)
+                query.WHERE(f'TypeId="{srch_type}"')
 
             srch_gvw  = request.form.get('gvw')
             if(srch_gvw is not None and srch_gvw != ""):
-                query.WHERE(str('GVW_DesignWeight=' + str(int(srch_gvw)/10)))
+                query.WHERE(f'GVW_DesignWeight={int(srch_gvw)/10}')
 
             srch_gtw  = request.form.get('gtw')
             if(srch_gtw is not None and srch_gtw != ""):
-                query.WHERE(str('GTW_DesignWeight=' + str(int(srch_gtw)/10)))
+                query.WHERE(f'GTW_DesignWeight={int(srch_gtw)/10}')
 
             srch_braketype_serv = request.form.get('braketype_serv')
             if(srch_braketype_serv is not None and srch_braketype_serv != "*"):
-                srch_braketype_serv = dtp.dtp_braketype(dbh, srch_braketype_serv)
+                query.WHERE(f'FoundServBrake={int(srch_braketype_serv)}')
 
             srch_braketype_sec  = request.form.get('braketype_sec')
+            if(srch_braketype_sec is not None and srch_braketype_sec != "*"):
+                query.WHERE(f'FoundSecBrake={int(srch_braketype_sec)}')
+
             srch_braketype_park = request.form.get('braketype_park')
+            if(srch_braketype_park is not None and srch_braketype_park != "*"):
+                query.WHERE(f'FoundParkBrake={int(srch_braketype_park)}')
 
             tmp = dbh.execute(str(query)).fetchall()
             results = []
             for row in tmp:
-                results.append("A")
+                results.append(dtp.master_rowparse(row))
 
-            return "{0} results".format(len(results))
+            return render_template('truck_result_adv.htm', resultcount = len(results), rtrucks=results)
         else:
             vehtype = dtp.dtp_fetch_vehtype(dbh)
             vehmake = dtp.dtp_fetch_vehmake(dbh)

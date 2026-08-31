@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>DTP Search Results: ({{ dtpmaybe }}) - {{ resultcount }} result{% if resultcount > 1 %}s{% endif %}</title>
+    <title>Advanced Search Results: {{ resultcount }} result{% if resultcount > 1 %}s{% endif %}</title>
     <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <h1>Result for {{ dtpmaybe }}</h1>
+    <div id="header">
+      <h1>Advanced Search Results - {{ resultcount }} result{% if resultcount > 1 %}s{% endif %}</h1>
+      {% if resultcount > 20 %}<strong><em>That's a lotta results!</em></strong>{% endif %}
+      <a href="/truck">Back to search...</a> - <a href="/">Back to main menu</a> - <a href="/help">Help?</a>
+    </div>
 
     <ul id="cardstack">
     {% for truck in rtrucks %}
-    <div class="resultcard">
-      <li>
+    <li>
+      <div class="resultcard">
 	<table>
 	  <tr>
 	    <th>DTP</th> <td><tt>{{truck["DTpNumber"] }}</tt></td>
@@ -20,7 +24,7 @@
 	    <th>Make</th> <td><tt>{{ truck["MakeStr"] }} ({{ truck["MakeId"] }})</tt></td>
 	  </tr>
 	  <tr>
-	    <th>Gross Weight</th> <td><tt>{{ truck["GVW_Design"] }}kg</tt></td>
+	    <th>Gross Weight</th> <td><tt>{{ truck["GVWDesign"] }}kg</tt></td>
 	    <th>Train Weight</th> <td>
 	      {% if truck["GTWDesign"] > 0 %}
 	      <tt>{{ truck["GTWDesign"] }}kg</tt>
@@ -59,7 +63,8 @@
     </li>
     {% endfor %}
     </ul>
-
-    <a href="/truck">Back to search...</a>
+    <div id="footer">
+      <a href="/truck">Back to search...</a> - <a href="/">Back to main menu</a>
+    </div>
   </body>
 </html>
