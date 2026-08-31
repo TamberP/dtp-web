@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Advanced Trailer Lookup (?) Results</title>
+    <title>Advanced Trailer Lookup</title>
+    <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <h1>Advanced Trailer Lookup, (?) Results</h1>
+    <div id="header">
+      <h1>Advanced Trailer Lookup Result</h1>
+      <a href="/trailer">Back to search</a>
+    </div>
+    <div class="resultcard" style="width: 30%;">
     <table>
       <tr>
-	<th>DTP</th> <td>{{ dtp }}</td>
+	<th>DTP</th> <td><tt><a href="/trailer?dtp={{ dtp }}">{{ dtp }}</a></tt></td>
       </tr>
       <tr>
-	<th>Axles</th> <td>{{ "{0}".format(vehtype[0]) }}</td>
+	<th>Axles</th> <td><tt>{{ "{0}".format(vehtype[0]) }}</tt></td>
       </tr>
       <tr>
-	<th>Design GVW</th> <td>{{ gvw }}kg</td>
+	<th>Design GVW</th> <td><tt>{{ gvw }} kg</tt></td>
       </tr>
       <tr>
-	<th>TAW</th> <td>{{ taw }}kg</td>
+	<th>TAW</th> <td><tt>{{ taw }} kg</tt></td>
       </tr>
+      <tr><th></th>
+	<td><tt><a href="/trailer?dtp={{ dtp }}">Load full card</a></tt></td>
     </table>
     <a href="/trailer">Back to search...</a>
     </body>

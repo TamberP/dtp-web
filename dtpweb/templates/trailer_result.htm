@@ -2,33 +2,43 @@
 <html>
   <head>
     <title>DTP Lookup - Trailer Result ( {{dtpmaybe}} )</title>
+    <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
   </head>
   <body>
+    <div id="header">
     <h1>Result for {{ dtpmaybe }}</h1>
+    <a href="/trailer">Back to search</a>
+    </div>
+    <div class="resultcard" style="width: 30%;">
     <table>
       <tr>
-	<th>DTP</th> <td>{{ dtpmaybe }}</td>
+	<th>DTP</th> <td colspan=2><tt>{{ dtpmaybe }}</tt></td>
       </tr>
       <tr>
-	<th>Type</th> <td>{{ rtrailer["TypeStr"] }}</td>
+	<th>Type</th> <td colspan=2><tt>{{ rtrailer["TypeStr"] }}</tt></td>
       </tr>
       <tr>
-	<th>Gross Weight</th> <td>{{ rtrailer["GVW"] }}kg</td>
+	<th>Gross Weight</th> <td colspan=2><tt>{{ rtrailer["GVW"] }} kg</tt></td>
       </tr>
       {% if rtrailer["TAW"] %}
       <tr>
-	<th>Total Axle Weight</th><td>{{rtrailer["TAW"]}}kg</td>
+	<th>Total Axle Weight</th><td colspan=2><tt>{{rtrailer["TAW"]}} kg</tt></td>
       </tr>
       <tr>
-	<th>Kingpin Weight</th><td>{{rtrailer["GVW"] - rtrailer["TAW"]}}kg</td>
+	<th>Kingpin Weight</th><td colspan=2><tt>{{rtrailer["GVW"] - rtrailer["TAW"]}} kg</tt></td>
       </tr>
       {% endif %}
+      <tr><th colspan=3><hr></th></tr>
       {% for x in range(1, (rtrailer["AxleCount"]+1)):%}
       <tr>
-	<th>Axle {{ x }}</th> <td>{{rtrailer["Axle{0}Weight".format(x)]}}kg</td>
+	<th>Axle {{ x }}</th> <td><tt>{{rtrailer["Axle{0}Weight".format(x)]}} kg</tt></td>
+	<td><tt>{{ "{}".format('[Park]') if(rtrailer["Park"][(x-1)] == True) }}</tt></td>
       </tr>
       {% endfor %}
     </table>
-    <a href="/trailer">Back to search...</a>
+    </div>
+    <div id="footer">
+      <a href="/trailer">Back to search...</a>
+    </div>
   </body>
 </html>
