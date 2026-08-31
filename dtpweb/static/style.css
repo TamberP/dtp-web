@@ -140,6 +140,14 @@ li.resultstack {
     text-align: right;
 }
 
+.resultcard a {
+    color: #222B32;
+}
+
+.resultcard a:hover {
+    color: #222B32;
+}
+
 form {
     padding: 0.5em;
 }
