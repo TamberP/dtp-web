@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>dtp-web Help</title>
+    <link href="/static/style.css" media="screen" rel="stylesheet" type="text/css">
+    </head>
+  <body>
+    <div id="header">
+      <h1>dtp-web, the Roller Brake Test Search ... thing</h1>
+      <p>
+	This is a web-based tool for digging through the UK Department
+	for Transport's roller brake-tester database, in order to show
+	brake test information for a given test procedure number (DTp
+	number, given on a VTG-6 or brake test result sheet), or by
+	using the advanced search tool to look up an appropriate DTp
+	number where none is available, or where the given DTp number
+	is wrong. <strong>This happens more often than you would like
+	to believe.</strong>
+      </p>
+    </div>
+
+    <div id="bigselect" style="display: inline;">
+      <div class="bigbutton" id="truck"><a href="#faq">Frequently Asked Questions</a></div>
+      <div class="bigbutton" id="trailer"><a href="#todo">To-do list/Known problems or broken stuff</a></div>
+      <div class="bigbutton" id="psv"><a href="#credits">Credits & Acknowledgements</a></div>
+    </div>
+
+    <br>
+    <h2 id="faq">Frequently Asked Questions</h2>
+    <ol>
+      <li><h3>...why</h3>
+	<p>Because I needed to figure out what the appropriate DTp
+	  number would be for my truck restoration project, and there
+	  didn't appear to be a good way to actually find that out
+	  because nobody I've talked to who has an RL has managed to
+	  show a DTp number for it; mostly because the places that
+	  have tested their trucks, have used the brake tester in
+	  manual mode rather than VOSA mode, I think.</p>
+      </li>
+    </ol>
+
+    <h2 id="todo">To-Do List</h2>
+    <ul>
+      <li>PSV search (Low priority for now!)</li>
+      <li>Advanced truck search</li>
+      <li>More information given in search results</li>
+      <li>All the pages need to be styled correctly</li>
+      <li>Mobile stylesheets!</li>
+      <li>Documentation (Ideally in-page, so things explain what they mean, right there where you need to use 'em)</li>
+    </ul>
+
+    <h2 id="credits">Credits & Acknowledgements</h2>
+    <h3><tt>_sql_util.py</tt></h3>
+    <p><tt>_sql_util.py</tt> is copyright &copy; 2018 lemon24, provided by
+      <a href="https://github.com/lemon24/reader">the reader
+	project</a>, licensed under the BSD 3-clause license.</p>
+
+    <h3>The UK Department for Transport</h3>
+    <p>The contents of the DTA database are a product of the UK
+    Department for Transport, and are public sector information,
+    updated versions of which are released via data.gov.uk
+    sporadically. The latest version (updated 6/7/2023) was released
+    on 24 Nov 2025 due to a FOIA request, and is listed as "License
+    not specified".</p>
+
+
+    <div id="footer">
+      	For the code, please
+	see <a href="https://github.com/TamberP/dtp-web"
+	title="GibHut, online source repository">the GibHut
+	repository</a>. The code that makes up this project, except
+	where otherwise noted, is provided under the terms of the AGPL
+	v3.0 license.
+    </div>
+  </body>
+</html>

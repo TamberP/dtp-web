@@ -42,6 +42,7 @@ a:hover {
     width: 80%;
     height: 10em;
     margin: auto;
+    display: inline;
 }
 
 div.bigbutton {
