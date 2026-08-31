@@ -1,4 +1,4 @@
-from . import _sql_utils
+from . import _sql_utils as sql
 from . import db
 from . import dtp
 import os
@@ -35,7 +35,7 @@ def create_app():
         dtpmaybe = None
 
         if(request.method == 'POST'):
-            if(request.form['dtp']):
+            if(request.form.get('dtp') != None):
                 dtpmaybe = request.form['dtp']
 
         else:
@@ -76,6 +76,56 @@ def create_app():
                                        braketype = braketype )
         except:
             return render_template('truck.htm', error = "Code exception! Beat the dev!"), 500
+
+    @app.route('/truckadv', methods=['POST', 'GET'])
+    def truck_adv():
+        dbh = db.get_db()
+        error = None
+        # advanced truck search!
+        if(request.method == 'POST'):
+            query = sql.Query()
+
+            query.FROM('Master').SELECT('*')
+
+            srch_make = request.form.get('make')
+            if(srch_make is not None and srch_make != "*"):
+                query.WHERE(str('MakeId="' + srch_make + '"'))
+#                srch_make = dtp.dtp_vehmake(dbh, srch_make)
+
+            srch_type = request.form.get('vehtype')
+            if(srch_type is not None and srch_type != "*"):
+                query.WHERE(str('TypeId="' + srch_type + '"'))
+#                srch_type = dtp.dtp_vehtype(dbh, srch_type)
+
+            srch_gvw  = request.form.get('gvw')
+            if(srch_gvw is not None and srch_gvw != ""):
+                query.WHERE(str('GVW_DesignWeight=' + str(int(srch_gvw)/10)))
+
+            srch_gtw  = request.form.get('gtw')
+            if(srch_gtw is not None and srch_gtw != ""):
+                query.WHERE(str('GTW_DesignWeight=' + str(int(srch_gtw)/10)))
+
+            srch_braketype_serv = request.form.get('braketype_serv')
+            if(srch_braketype_serv is not None and srch_braketype_serv != "*"):
+                srch_braketype_serv = dtp.dtp_braketype(dbh, srch_braketype_serv)
+
+            srch_braketype_sec  = request.form.get('braketype_sec')
+            srch_braketype_park = request.form.get('braketype_park')
+
+            tmp = dbh.execute(str(query)).fetchall()
+            results = []
+            for row in tmp:
+                results.append("A")
+
+            return "{0} results".format(len(results))
+        else:
+            vehtype = dtp.dtp_fetch_vehtype(dbh)
+            vehmake = dtp.dtp_fetch_vehmake(dbh)
+            braketype = dtp.dtp_fetch_braketype(dbh)
+            return render_template('truck.htm',
+                                   vehtype = vehtype,
+                                   vehmake = vehmake,
+                                   braketype = braketype )
 
 
     ################################################################################
@@ -280,6 +330,9 @@ def create_app():
     def psv():
         return "<html><body><h1>Not Implemented</h1><a href='/'>Main Menu</a></body></html>"
 
+    @app.route('/help')
+    def show_da_help():
+        return render_template('help.htm')
 
     ## Do the thing!
     db.init_app(app)
