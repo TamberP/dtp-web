@@ -286,6 +286,22 @@ def create_app():
                 scrundle[3] = "1"
             scrundle = "".join(scrundle)
 
+
+            # *** Did U Kno? ***
+
+            # If I'd put those flags together in the opposite order,
+            # (typeappr as scrundle[3], ebs as scrundle[0]), I
+            # wouldn't need this match-case?
+
+            # I could've done it with actual binary, even.
+            # if(...): scrundle += 0b0001 [...] scrundle += 0b0100
+            # and then done dtp_f = str(scrundle) if scrundle <= 8 else 'X'.
+
+            # but I didn't, 'cause I put did it this way which made it
+            # not very obvious that it's literally just counting up.
+            # Thanks u byte @ chitter.xyz for spotting this and
+            # pointing out the other solution.
+
             match scrundle:
                 case '0000':
                     dtp_f = '0'
