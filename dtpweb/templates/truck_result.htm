@@ -37,6 +37,10 @@
 	      <tt>LSV {% if truck["LSVFitted"] == 'Yes' %}✔️
 		{% elif truck["LSVOption"] == 'Yes' %} OPT {% else %} ✖️ {% endif %}</tt>
 	    </td>
+	    <td>
+	      {{ "<tt>{}</tt>".format("Double Drive") if (truck["DoubleDrive"] == 'Yes') }}
+	      {{ "<tt>{}</tt>".format('Tractor-only Secondary') if (truck["Secondary_only_Tractor"] == 'Yes') }}
+	    </td>
 	  </tr>
 	  {% for x in range(1, (truck["AxleCount"]+1)): %}
 	  <tr>
@@ -59,7 +63,8 @@
 	  <tr><td colspan=2><tt>({{ truck["SecondaryType"] }})</tt></td></tr>
 	  <tr>
 	    <th>Parking</th> <td><tt>{{ truck["BrakeRoutinePark"] }}
-		{% if truck["ParkOnDiff"] == 'Yes' %}<u>On Transmission</u>{% endif %}
+		{% if truck["ParkOnDiff"] == 'Yes' %}<u>On Diff</u>{% endif %}
+		{% if truck["Trans_Sec_Park_Brake"] == 'Yes' %}<u>On Transmission</u>{% endif %}
 	    </tt></td>
 	  </tr>
 	  <tr><td colspan=2><tt>({{ truck["ParkType"] }})</tt></td></tr>
