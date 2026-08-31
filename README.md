@@ -39,6 +39,31 @@ and its dependencies:
 - MarkupSafe (3.0.3)
 - Werkzeug (3.1.8)
 
+# Running
+## 'local' mode
+*  `flask -A dtpweb run` from the project root
+* point your web-browser to http://127.0.0.1:5000
+
+## 'remote' mode
+
+You will have to set up a WSGI server that serves up the flask app
+returned by `dtpweb.create_app()`, which is an exercise left for the
+reader.
+
+Largely because I couldn't get it to work on my setup, so I just
+bodged it with the `dtpweb.py` script that stands up a
+`wsgiref.simple_server` on http://127.0.0.1:8000, and then
+reverse-proxied it with my web-server. Do something similar if you
+wish.
+
+## Security
+
+This doesn't handle any sensitive or personal data, it's just doing
+lookups out of a local sqlite DB. There's a risk of sql injection that
+in and of itself could only damage the lookup database, but I can't
+guarantee that it *couldn't* be used to attack other things in the
+system.
+
 # Licensing
 ## The Database
 The contents of the V2101/DTA database are a product of the Department
